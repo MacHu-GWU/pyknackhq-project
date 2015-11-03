@@ -1,20 +1,18 @@
-.. pyknackhq documentation master file, created by
-   sphinx-quickstart on Thu Oct 29 22:58:50 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. include:: ..\readme.rst
 
-Welcome to pyknackhq's documentation!
-=====================================
-
-Contents:
+Table of Content
+================================================================================
 
 .. toctree::
    :maxdepth: 2
 
+   	Quick Start <quick start>
+   	Advance feature <advance feature>
 
+.. include:: about.rst
 
 Indices and tables
-==================
+================================================================================
 
 * :ref:`genindex`
 * :ref:`modindex`

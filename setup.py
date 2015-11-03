@@ -55,8 +55,8 @@ from datetime import datetime
 import os
 
 GITHUB_ACCOUNT = "MacHu-GWU" # your GitHub account name
-RELEASE_TAG = "2015-09-24" # the GitHub release tag
-NAME = "sqlite4dummy" # name your package
+RELEASE_TAG = "2015-11-03" # the GitHub release tag
+NAME = "pyknackhq" # name your package
 
 VERSION = __import__(NAME).__version__
 PACKAGES = [NAME] + ["%s.%s" % (NAME, i) for i in find_packages(NAME)]
@@ -80,9 +80,8 @@ LICENSE = "MIT"
 
 PLATFORMS = ["Windows", "MacOS", "Unix"]
 CLASSIFIERS = [
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
     "Operating System :: Microsoft :: Windows",

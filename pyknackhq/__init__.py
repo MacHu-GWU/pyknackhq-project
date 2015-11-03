@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Reference: http://helpdesk.knackhq.com/support/solutions/articles/5000444173-working-with-the-api#about
+The official knackhq API documentation:
+http://helpdesk.knackhq.com/support/solutions/articles/5000444173-working-with-the-api#about
 """
 
 from __future__ import print_function
@@ -12,10 +13,16 @@ import requests
 import json
 
 __version__ = "0.0.1"
-__short_description__ = "A minimal knackhq API Python wrapper."
+__short_description__ = "knackhq root access Python API."
 
 class Auth(object):
     """Knackhq API authentication class.
+    
+    :param application_id: str type, Application ID
+    :param api_key: str type, API Key
+    
+    To get your Application ID and API Key, read this tutorial:
+    http://helpdesk.knackhq.com/support/solutions/articles/5000444173-working-with-the-api#key
     """
     def __init__(self, application_id, api_key=None):
         self.application_id = application_id
@@ -34,90 +41,402 @@ class Auth(object):
             "X-Knack-REST-API-Key": self.api_key,
             "Content-Type": "application/json",
         }
-        
+
+    def __str__(self):
+        if self.api_key == "knack":
+            access = "page"
+        else:
+            access = "root"  
+            
+        return "application_id = '%s', using %s access" % (
+            self.application_id, access)
+         
     @staticmethod
     def from_json(abspath):
-        """Read authentication info from json file.
+        """Read authentication information from a ``.json`` file.
+        
+        The ``.json`` file looks like::
+        
+            {"application_id": "your Application ID", "api_key": "your API Key"}
         """
         with open(abspath, "rb") as f:
             data = json.loads(f.read().decode("utf-8"))
         auth = Auth(application_id=data["application_id"], 
                     api_key=data.get("api_key"))
         return auth
+
+    def get(self, url, params=dict()):
+        """Http get method wrapper.
+        """
+        try:
+            res = requests.get(url, headers=self.headers, params=params)
+            return json.loads(res.text)
+        except Exception as e:
+            print(e)
+            return "error"
     
-    def __str__(self):
-        return "application_id = '%s', api_key = '%s'" % (
-            self.application_id, self.api_key)
+    def post(self, url, data):
+        """Http post method wrapper.
+        """
+        try:
+            res = requests.post(
+                url, headers=self.headers, data=json.dumps(data))
+            return json.loads(res.text)
+        except Exception as e:
+            print(e)
+            return "error"
+    
+    def put(self, url, data):
+        """Http put method wrapper.
+        """
+        try:
+            res = requests.put(
+                url, headers=self.headers, data=json.dumps(data))
+            return json.loads(res.text)
+        except Exception as e:
+            print(e)
+            return "error"
+    
+    def delete(self, url):
+        """Http delete method wrapper.
+        """
+        try:
+            res = requests.delete(url, headers=self.headers)
+            return json.loads(res.text)
+        except Exception as e:
+            print(e)
+            return "error"
+
 
 class Field(object):
     """Field of object class.
+    
+    Fields are used to define specific attributes of and object.
+    
+    :param key: str type, object_key
+    :param name: str type, object_name
+    :param dtype: str type, data type name
+    :param required: boolean type, if true, then this field is not nullable
     """
-    def __init__(self, _id, name, dtype, required):
-        self._id = _id
+    def __init__(self, key, name, dtype, required):
+        self.key = key
         self.name = name
         self.dtype = dtype
         self.required = required 
 
     def __repr__(self):
-        return "Field(_id='%s', name='%s', dtype='%s', required=%s)" % (
-            self._id, self.name, self.dtype, self.required)
-    
+        return "Field(key='%s', name='%s', dtype='%s', required=%s)" % (
+            self.key, self.name, self.dtype, self.required)
+
+
 class Object(object):
     """Data object class.
+    
+    Object are used to define an abstract concept of thing. For example, an
+    employee can be an object having attributes: name, date of birth, phone,
+    email, etc...
+    
+    :param key: object_key
+    :param name: object_name
+    :param auth: an instance of :class:`~Auth`
     """
-    def __init__(self, _id, name, *args):
-        self._id = _id
+    def __init__(self, key, name, auth, *args):
+        self.key = key
         self.name = name
-        self.f = OrderedDict() # {field_id: Field instance}
+        self.auth = auth
+        self.f = OrderedDict() # {field_key: Field instance}
         self.f_name = OrderedDict() # {field_name: Field instance}
         for field in args:
-            self.f[field._id] = field
+            self.f[field.key] = field
             self.f_name[field.name] = field
+            
+        self.get_url = "https://api.knackhq.com/v1/objects/%s/records" % key
+        self.post_url = "https://api.knackhq.com/v1/objects/%s/records" % key
+        
+    def __repr__(self):
+        return "Object(key='%s', name='%s')" % (self.key, self.name)
+    
+    def __iter__(self):
+        return iter(self.f.values())
     
     @property
-    def all_field_id(self):
-        """Return all field_id.
+    def all_field_key(self):
+        """Return all available field_key.
         """
-        return list(self.f)
+        return [f.key for f in self.f.values()]
     
     @property
     def all_field_name(self):
-        """Return all field name
+        """Return all available field_name.
         """
         return [f.name for f in self.f.values()]
     
-    def __repr__(self):
-        return "Object(_id='%s', name='%s')" % (self._id, self.name)
-    
-    def get_field_id(self, field_name):
-        """Given a field name, return it's field_id.
+    def get_field_key(self, key, using_name=True):
+        """Given a field key or name, return it's field key.
         """
         try:
-            return self.f_name[field_name]._id
+            if using_name:
+                return self.f_name[key].key
+            else:
+                return self.f[key].key
         except KeyError:
-            raise ValueError("'%s' are not found!" % field_name)
+            raise ValueError("'%s' are not found!" % key)
 
-    def get_field(self, field_name):
-        """Given a field name, return the Field instance.
+    def get_field(self, key, using_name=True):
+        """Given a field key or name, return the Field instance.
         """
         try:
-            return self.f_name[field_name]
+            if using_name:
+                return self.f_name[key]
+            else:
+                return self.f[key]
         except KeyError:
-            raise ValueError("'%s' are not found!" % field_name)
+            raise ValueError("'%s' are not found!" % key)
+
+    def convert_data(self, data):
+        """Convert field name like key to field key.
+               
+        {"field_name": value} => {"field_key": value}
+        """
+        new_data = dict()
+        for key, value in data.items():
+            new_data[self.get_field_key(key)] = value
+        return new_data
+    
+    def recover_data(self, data):
+        """Convert field_key like key to field name.
+        
+        {"field_key": value} => {"field_name": value}
+        """
+        new_data = {"id": data["id"]}
+        for field in self:
+            raw_key = "%s_raw" % field.key
+            if raw_key in data:
+                new_data[field.name] = data[raw_key]
+        return new_data
+            
+    # CRUD method
+    def insert_one(self, data, using_name=True):
+        """Insert one record.
+        
+        Ref: http://helpdesk.knackhq.com/support/solutions/articles/5000446111-api-reference-root-access#create
+        
+        For more information of the raw structure of all data type, read this:
+        http://helpdesk.knackhq.com/support/solutions/articles/5000446405-field-types
+        
+        :param data: dict type data
+        :param using_name: if you are using field_name in data,
+          please set using_name = True (it's the default), otherwise, False
+        
+        **中文文档**
+        
+        插入一条记录
+        """
+        if using_name:
+            data = self.convert_data(data)
+        res = self.auth.post(self.post_url, data)
+        return res
+    
+    def insert(self, data, using_name=True):
+        """Insert one or many records.
+
+        :param data: dict type data or list of dict
+        :param using_name: if you are using field name in data,
+          please set using_name = True (it's the default), otherwise, False
+          
+        **中文文档**
+        
+        插入多条记录
+        """
+        if isinstance(data, list): # if iterable, insert one by one
+            if using_name:
+                data = [self.convert_data(d) for d in data]
+            for d in data:
+                self.insert_one(d, using_name=False)
+        else: # not iterable, execute insert_one
+            self.insert_one(data, using_name=using_name)
+
+    def find_one(self, _id, using_name=True, recovery=True):
+        """Find one record.
+        
+        Ref: http://helpdesk.knackhq.com/support/solutions/articles/5000446111-api-reference-root-access#retrieve
+        
+        :param _id: record id
+        :param using_name: if you are using field name in filter and sort_field,
+          please set using_name = True (it's the default), otherwise, False
+        :param recovery: set True if you want the key to be field name rather 
+          than field id 
+          
+        **中文文档**
+        
+        返回一条记录
+        """
+            
+        url = "https://api.knackhq.com/v1/objects/%s/records/%s" % (
+            self.key, _id)
+        res = self.auth.get(url)
+        
+        if recovery:
+            try:
+                res = self.recover_data(res)
+            except:
+                pass
+        return res
+
+    def find(self, filter=list(), 
+             sort_field=None, sort_order=None, 
+             page=None, rows_per_page=None,
+             using_name=True, data_only=True, recovery=True):
+        """Execute a find query.
+        
+        Ref: http://helpdesk.knackhq.com/support/solutions/articles/5000446111-api-reference-root-access#retrieve
+        
+        :param filter: list of criterions. For more information: 
+          http://helpdesk.knackhq.com/support/solutions/articles/5000447623-api-reference-filters-search
+        :param sort_field: field_name or field_id, taking field_name by default.
+          if using field_id, please set using_name = False.
+        :param sort_order: -1 or 1, 1 means ascending, -1 means descending
+        :param page and rows_per_page: skip first #page * #rows_per_page, 
+          returns #rows_per_page of records. For more information:
+          http://helpdesk.knackhq.com/support/solutions/articles/5000444173-working-with-the-api#pagination
+        :param using_name: if you are using field_name in filter and sort_field,
+          please set using_name = True (it's the default), otherwise, False
+        :param data_only: set True you only need the data or the full api
+          response
+        :param recovery: set True if you want the key to be field_name rather 
+          than field_key 
+
+        **中文文档**
+        
+        返回多条记录
+        """
+        if using_name:            
+            for criterion in filter:
+                criterion["field"] = self.get_field_key(criterion["field"])
+            
+            if sort_field:
+                sort_field = self.get_field_key(sort_field)
+            
+        if sort_order is None:
+            pass
+        elif sort_order == 1:
+            sort_order = "asc"
+        elif sort_order == -1:
+            sort_order = "desc"
+        else:
+            raise ValueError
+        
+        params = dict()
+        if len(filter) >= 1:
+            params["filters"] = json.dumps(filter)
+        
+        if sort_field:
+            params["sort_field"] = sort_field
+            params["sort_order"] = sort_order
+        
+        if (page is not None) \
+            and (rows_per_page is not None) \
+            and isinstance(page, int) \
+            and isinstance(rows_per_page, int) \
+            and (page >= 1) \
+            and (rows_per_page >= 1):
+            params["page"] = page
+            params["rows_per_page"] = rows_per_page
+        
+        res = self.auth.get(self.get_url, params)
+        
+        # handle data_only and recovery
+        if data_only:
+            try:
+                res = res["records"]
+                if recovery:
+                    res = [self.recover_data(data) for data in res]
+            except KeyError:
+                pass
+        else:
+            if recovery:
+                try:
+                    res["records"] = [
+                        self.recover_data(data) for data in res["records"]]
+                except KeyError:
+                    pass
+        return res
+    
+    def update_one(self, _id, data, using_name=True):
+        """Update one record. Any fields you don't specify will remain unchanged.
+        
+        Ref: http://helpdesk.knackhq.com/support/solutions/articles/5000446111-api-reference-root-access#update
+        
+        :param _id: record id
+        :param data: the new data fields and values
+        :param using_name: if you are using field name in data,
+          please set using_name = True (it's the default), otherwise, False
+          
+        
+        **中文文档**
+        
+        对一条记录进行更新
+        """
+        if using_name:
+            data = self.convert_data(data)
+        
+        url = "https://api.knackhq.com/v1/objects/%s/records/%s" % (
+            self.key, _id)
+        res = self.auth.put(url, data)
+        return res
+    
+    def delete_one(self, _id, using_name=True):
+        """Delete one record.
+        
+        Ref: http://helpdesk.knackhq.com/support/solutions/articles/5000446111-api-reference-root-access#delete
+        
+        :param _id: record id
+        :param using_name: if you are using field name in data,
+          please set using_name = True (it's the default), otherwise, False
+          
+        **中文文档**
+        
+        删除一条记录
+        """        
+        url = "https://api.knackhq.com/v1/objects/%s/records/%s" % (
+            self.key, _id)
+        res = self.auth.delete(url)
+        return res
+    
+    def delete_all(self, using_name=True): 
+        """Delete all record in the table/collection of this object.
+        
+        **中文文档**
+        
+        删除表中的所有记录
+        """
+        for record in self.find(using_name=False, data_only=True):
+            res = self.delete_one(record["id"], using_name=False)
+
 
 class Schema(object):
     """Schema class that holding object and its fields information.
     """
-    def __init__(self, *args):
-        self.o = OrderedDict() # {object_id: Object instance}
+    def __init__(self, name, *args):
+        self.name = name
+        self.o = OrderedDict() # {object_key: Object instance}
         self.o_name = OrderedDict() # {object_name: Object instance}
         for object_ in args:
-            self.o[object_._id] = object_
+            self.o[object_.key] = object_
             self.o_name[object_.name] = object_
-            
+    
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return "Schema(name='%s')" % self.name
+    
+    def __iter__(self):
+        return iter(self.o.values())
+    
     @property
-    def all_object_id(self):
-        """Return all object_id.
+    def all_object_key(self):
+        """Return all object_key.
         """
         return list(self.o)
 
@@ -127,256 +446,332 @@ class Schema(object):
         """
         return list(self.o_name)
 
-    def get_object_id(self, object_name):
-        """Given an object name, return it's object_id.
+    def get_object_key(self, key, using_name=True):
+        """Given an object_key or object_name, return it's object_key.
         """
         try:
-            return self.o_name[object_name]._id
+            if using_name:
+                return self.o_name[key].key
+            else:
+                return self.o[key].key
         except KeyError:
-            raise ValueError("'%s' are not found!" % object_name)
+            raise ValueError("'%s' are not found!" % key)
     
-    def get_object(self, object_name):
-        """Given an object name, return the Object instance.
+    def get_object(self, key, using_name=True):
+        """Given an object_key or object_name, return the Object instance.
         """
         try:
-            return self.o_name[object_name]
+            if using_name:
+                return self.o_name[key]
+            else:
+                return self.o[key]
         except KeyError:
-            raise ValueError("'%s' are not found!" % object_name)
+            raise ValueError("'%s' are not found!" % key)
     
-class Client(object):
-    """Knackhq API client class.
-    """
-    def __init__(self, auth, read_schema=True):
-        self.auth = auth
-        if read_schema:
-            self.get_schema()
+    @property
+    def structure(self):
+        d = {"name": self.name, "objects": dict()}
+        for object_ in self.o.values():
+            d["objects"][object_.key] = {
+                "key": object_.key, "name": object_.name, "fields": dict(),
+            }
+            for field in object_.f.values():
+                d["objects"][object_.key]["fields"][field.key] = {
+                    "key": field.key, "name": field.name, 
+                    "dtype": field.dtype, "required": field.required,
+                }
+        return d
+    
+    def to_json(self, abspath="application_schema.json"):
+        """Dump schema structure data to a json file.
         
-    def _get(self, url, params=dict()):
+        example json data:: 
+        
+            {
+                "name": schema_name,
+                "objects": {
+                    object_key1: {
+                        "key": object_key1,
+                        "name": object_name1,
+                        "fields": {
+                            field_key1: {
+                                "key": field_key1,
+                                "name": field_name1,
+                                "dtype": field_dtype1,
+                                "required": field_required1,
+                            },
+                            field_key2: ...
+                        },
+                    },
+                    object_key2: ...
+                },
+            }
         """
-        """
-        try:
-            res = requests.get(url, headers=self.auth.headers, params=params)
-            return json.loads(res.text)
-        except Exception as e:
-            print(e)
-            return "error"
+        with open(abspath, "wb") as f:
+            f.write(json.dumps(self.structure, sort_keys=True,
+                indent=4, separators=("," , ": ")).encode("utf-8"))
     
-    def _post(self, url, data):
+    @staticmethod
+    def from_json(abspath="application_schema.json"):
+        """Read schema structure data from json file.
+        
+        **中文文档**
+        
+        从json数据中读取Schema信息, 并返回据此创建的Schema对象。
         """
-        """
-        try:
-            res = requests.post(
-                url, headers=self.auth.headers, data=json.dumps(data))
-            return json.loads(res.text)
-        except Exception as e:
-            print(e)
-            return "error"
+        with open(abspath, "rb") as f:
+            d = json.loads(f.read().decode("utf-8"))
+            
+        application_name = d["name"]
+        object_list = list()
+        for object_data in d["objects"].values():
+            field_list = list()
+            for field_data in d["objects"][object_data["key"]]["fields"].values():
+                field_list.append(Field(
+                    field_data["key"],
+                    field_data["name"],
+                    field_data["dtype"],                    
+                    field_data["required"],
+                ))
+            object_list.append(Object(
+                object_data["key"],
+                object_data["name"],
+                None,
+                *field_list                
+            ))
+        
+        schema = Schema(application_name, *object_list)
+        return schema
 
-    def _put(self, url, data):
-        """
-        """
-        try:
-            res = requests.put(
-                url, headers=self.auth.headers, data=json.dumps(data))
-            return json.loads(res.text)
-        except Exception as e:
-            print(e)
-            return "error"
+class Application(object):
+    """Knackhq application class.
+
+    :param application_name: name of your application
+    :param auth: :class:`~Auth` instance
+    :param schema: :class:`~Schema` instance
     
-    def _delete(self, url):
-        """
-        """
-        try:
-            res = requests.delete(url, headers=self.auth.headers)
-            return json.loads(res.text)
-        except Exception as e:
-            print(e)
-            return "error"
+    **中文文档**
+    
+
+    """
+    def __init__(self, application_name, auth, schema=None):
+        self.application_name = application_name
+        self.auth = auth
+        if schema is not None:
+            self.schema = schema
+        else:
+            self.pull_schema_from_server()
         
-    def get_schema(self):
+    def pull_schema_from_server(self):
         """Get object, field, field type schema information.
         """
         object_list = list()
         
         url = "https://api.knackhq.com/v1/objects"    
-        data = self._get(url)
+        data = self.auth.get(url)
         for d in data["objects"]:
-            object_id, object_name = d["key"], d["name"]
+            object_key, object_name = d["key"], d["name"]
             
             field_list = list()
             
-            url = "https://api.knackhq.com/v1/objects/%s/fields" % object_id
-            data = self._get(url)
+            url = "https://api.knackhq.com/v1/objects/%s/fields" % object_key
+            data = self.auth.get(url)
             for d in data["fields"]:
-                field = Field(_id=d["key"], name=d["label"], 
+                field = Field(key=d["key"], name=d["label"], 
                                 dtype=d["type"], required=d["required"])
                 field_list.append(field)
-                object_ = Object(object_id, object_name, *field_list)
+                object_ = Object(object_key, object_name, self.auth, *field_list)
             
             object_list.append(object_)
             
-        self.schema = Schema(*object_list)
-    
-    def convert_data(self, object_name, data):
-        """{"field_name": value} => {"field_id": value}
-        """
-        object_ = self.schema.get_object(object_name)
-        new_data = dict()
-        for key, value in data.items():
-            new_data[object_.get_field_id(key)] = value
-        return new_data
-    
-    def recover_data(self, object_name, data):
-        """{"field_id": value} => {"field_name": value}
-        """
-        object_ = self.schema.get_object(object_name)
-        
-    # CRUD method
-    def insert_one(self, object_id, data, using_name=True):
-        """Create
-        
-        Ref: http://helpdesk.knackhq.com/support/solutions/articles/5000446111-api-reference-root-access#create
-        """
-        if using_name:            
-            data = self.convert_data(object_id, data)
-            object_id = self.schema.get_object_id(object_id)
-            
-        url = "https://api.knackhq.com/v1/objects/%s/records" % object_id
-        res = self._post(url, data)
-        return res
+        self.schema = Schema(self.application_name, *object_list)
 
-    def select_one(self, object_id, _id, using_name=True):
-        """Read one record
-        
-        Ref: http://helpdesk.knackhq.com/support/solutions/articles/5000446111-api-reference-root-access#retrieve
+    @property
+    def all_object_key(self):
+        """Return all object_key.
         """
-        if using_name:
-            object_id = self.schema.get_object_id(object_id)
-            
-        url = "https://api.knackhq.com/v1/objects/%s/records/%s" % (object_id, _id)
-        res = self._get(url)
-        return res
+        return self.schema.all_object_key
     
-    def select_all(self, object_id, using_name=True):
-        """Read all records
-        
-        Ref: http://helpdesk.knackhq.com/support/solutions/articles/5000446111-api-reference-root-access#retrieve
+    @property
+    def all_object_name(self):
+        """Return all object name.
         """
-        if using_name:
-            object_id = self.schema.get_object_id(object_id)
-            
-        url = "https://api.knackhq.com/v1/objects/%s/records" % object_id
-        res = self._get(url)
-        return res
+        return self.schema.all_object_name
     
-    def update_one(self, object_id, _id, data, using_name=True):
-        """Update one record. Any fields you don't specify will remain unchanged.
+    def get_object(self, key, using_name=True):
+        """Get :class:`~Object` instance.
         
-        Ref: http://helpdesk.knackhq.com/support/solutions/articles/5000446111-api-reference-root-access#update
+        :param key: object_key or object_name
+        :param using_name: True if getting object by object name
         """
-        if using_name:
-            data = self.convert_data(object_id, data)
-            object_id = self.schema.get_object_id(object_id)
-            
-        url = "https://api.knackhq.com/v1/objects/%s/records/%s" % (object_id, _id)
-        res = self._put(url, data)
-        return res
-    
-    def delete_one(self, object_id, _id, using_name=True):
-        """Delete one record.
-        
-        Ref: http://helpdesk.knackhq.com/support/solutions/articles/5000446111-api-reference-root-access#delete
-        """
-        if using_name:
-            object_id = self.schema.get_object_id(object_id)
-        
-        url = "https://api.knackhq.com/v1/objects/%s/records/%s" % (object_id, _id)
-        res = self._delete(url)
-        return res
-    
+        object_ = self.schema.get_object(key, using_name=using_name)
+        object_.auth = self.auth
+        return object_
+
 if __name__ == "__main__":
     import unittest
+    import random
+    import os
+    
+    AUTH_FILE = os.path.join(
+        os.path.dirname(os.getcwd()), "auth.json")
+    SCHEMA_FILE = os.path.join(
+        os.path.dirname(os.getcwd()), "application_schema.json")
 
-    class CreateUnittest(unittest.TestCase):
-        def setUp(self):
-            self.client = Client(auth=Auth.from_json("auth.json"))
+    def prepare_schema_data():
+        if not os.path.exists(SCHEMA_FILE):
+            app = Application(application_name="apitest",
+                            auth=Auth.from_json(AUTH_FILE))
+            app.schema.to_json(SCHEMA_FILE)
 
-        def test_schema(self):
-            schema = self.client.schema
-            print(schema.all_object_id)
+    def prepare_test_data():
+        app = Application(
+            application_name="apitest",
+            auth=Auth.from_json(AUTH_FILE),
+            schema=Schema.from_json(SCHEMA_FILE),
+        )
+        
+        text_type = app.get_object("text_type")
+        text_type.delete_all()
+        data = {
+            "short_text": "Hello World",
+            "paragraph_text": "A very long paragraph",
+            "rich_text": "<strong>Emphasized Text</strong>",
+            "name": {
+                "title": "Mr.",
+                "first": "James",
+                "middle": "F",
+                "last": "Bonder",
+            },
+            "address": {
+                "street":"123 Street",
+                "street2":"Apt 456",
+                "city":"New York",
+                "state":"NY",
+                "zip":"10023",
+            },
+            "email": {
+                "email": "example@gmail.com",
+            },
+            "link": {
+                "url": "www.google.com",
+            },
+        }
+        text_type.insert(data)
+        
+        number_type = app.get_object("number_type")
+        number_type.delete_all()
+        data = [{
+            "integer": i,
+            "float": float("%.2f" % random.random()),
+        } for i in range(1, 10+1)]
+        number_type.insert(data)
+        
+#     prepare_schema_data()
+#     prepare_test_data()
+        
+    class SchemaUnittest(unittest.TestCase):
+        def test_from_json(self):
+            """检查从json文件中读取Schema信息。
+            """
+            schema = Schema.from_json(SCHEMA_FILE)
+            print(schema.all_object_key)
             print(schema.all_object_name)
+            number_type = schema.get_object("number_type")
+            integer_field = number_type.get_field("integer")
+            float_field = number_type.get_field("float")
+            self.assertEqual(integer_field.name, "integer")
+            self.assertEqual(float_field.name, "float")
              
-            object_test_id = schema.get_object_id("text_type")
-            object_special_id = schema.get_object_id("special")
-            print(object_test_id)
-            print(object_special_id)
-             
-            object_test = schema.get_object("text_type")
-            object_special = schema.get_object("special")
-            print(object_test)
-            print(object_special)
+    class FindUnittest(unittest.TestCase):
+        def setUp(self):
+            app = Application(
+                application_name="apitest",
+                auth=Auth.from_json(AUTH_FILE),
+                schema=Schema.from_json(SCHEMA_FILE),
+            )
+            self.number_type = app.get_object("number_type")
+  
+        def test_find_all(self):
+            res = self.number_type.find()
+            for record in res:
+                print(record)
               
-            print(object_test.all_field_id)
-            print(object_test.all_field_name)
-            print(object_special.all_field_id)
-            print(object_special.all_field_name)
-         
-        def test_create(self):
-            res = self.client.insert_one(
-                object_id="text_type", 
-                data={
-                    "test_id": "ID-0001",
-                    "short_text": "Hello World",
-                    "paragraph_text": "A very long paragraph",
-                    "rich_text": "<strong>Emphasized Text</strong>",
-                    "name": {
-                        "title": "Mr.",
-                        "first": "James",
-                        "middle": "F",
-                        "last": "Bonder",
+        def test_find_one(self):
+            res = self.number_type.find()
+            for record in res:
+                res = self.number_type.find_one(record["id"])
+                print(res)
+                res = self.number_type.find_one(record["id"], recovery=False)
+                print(res) 
+                break
+  
+        def test_filter(self):
+            res = self.number_type.find(
+                filter=[
+                    {
+                        "field": "integer",
+                        "operator": "higher than",
+                        "value": 3.99,
                     },
-                    "address": {
-                        "street":"123 Street",
-                        "street2":"Apt 456",
-                        "city":"New York",
-                        "state":"NY",
-                        "zip":"10023",
+                    {
+                        "field": "integer",
+                        "operator": "lower than",
+                        "value": 6.01,
                     },
-                    "email": {
-                        "email": "example@gmail.com",
-                    },
-                    "link": {
-                        "url": "www.google.com",
-                    }
-                },
-                using_name=True,
+                ],
             )
             ppt(res)
-         
-        def test_select_one(self):
-            res = self.client.select_one(
-                "text_type", _id="5632caf696aca78b43ea7c47", using_name=True)
+  
+        def test_sort(self):
+            res = self.number_type.find(
+                sort_field="float", sort_order=-1,
+            )
             ppt(res)
-             
-            res = self.client.select_one(
-                "object_1", _id="5632caf696aca78b43ea7c47", using_name=False)
+          
+        def test_pagination(self):
+            res = self.number_type.find(
+                page=2, rows_per_page=3,
+            )
             ppt(res)
-             
-        def test_select_all(self):
-            res = self.client.select_all("text_type", using_name=True)
+        
+        def test_complex_find(self):
+            res = self.number_type.find(
+                filter=[
+                    {
+                        "field": "integer",
+                        "operator": "higher than",
+                        "value": 2.99,
+                    },
+                    {
+                        "field": "integer",
+                        "operator": "lower than",
+                        "value": 7.01,
+                    },
+                ],
+                sort_field="float", sort_order=-1,
+                page=2, rows_per_page=3,
+            )
             ppt(res)
-                
-            res = self.client.select_all("object_1", using_name=False)
-            ppt(res)
-             
+            
+    class UpdateUnittest(unittest.TestCase):
+        def setUp(self):
+            app = Application(
+                application_name="apitest",
+                auth=Auth.from_json(AUTH_FILE),
+                schema=Schema.from_json(SCHEMA_FILE),
+            )
+            self.text_type = app.get_object("text_type")
+              
         def test_update_one(self):
-            res = self.client.update_one(
-                "text_type", _id="5632caf696aca78b43ea7c47", 
-                data={"short_text": "Updated Short Text"}, using_name=True)
-            ppt(res)
-
-        def test_delete_one(self):
-            res = self.client.delete_one("text_type", _id="5632caf696aca78b43ea7c47")
-            ppt(res)
+            for record in self.text_type.find():
+                _id = record["id"]
+            short_text = "Text_" + str(random.randint(1, 1024)).zfill(4)
+            res = self.text_type.update_one(
+                _id=_id, 
+                data={"short_text": short_text}, using_name=True,
+            )
+            res = self.text_type.find_one(_id=_id)
+            self.assertEqual(res["short_text"], short_text)
             
     unittest.main()
