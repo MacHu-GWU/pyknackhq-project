@@ -10,5 +10,6 @@ try:
 except Exception as e:
     print(e)
 
-docfly = Docfly("pyknackhq", dst="source")
+docfly = Docfly("pyknackhq", dst="source",
+                ignore=["pyknackhq.tests", "pyknackhq.zzz_manual_install"])
 docfly.fly()

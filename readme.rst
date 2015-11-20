@@ -14,7 +14,7 @@ Quick Link:
 - `Github <https://github.com/MacHu-GWU/pyknackhq-project>`_
 - `pyknackhq PyPI Homepage <https://pypi.python.org/pypi/pyknackhq>`_
 - `Online Documentation <http://www.wbh-doc.com.s3.amazonaws.com/pyknackhq/index.html>`_
-- `Naive knackhq API <http://helpdesk.knackhq.com/support/solutions/articles/5000444173-working-with-the-api>`_ 
+- `Original knackhq API <http://helpdesk.knackhq.com/support/solutions/articles/5000444173-working-with-the-api>`_ 
 - `Class method reference <http://www.wbh-doc.com.s3.amazonaws.com/pyknackhq/pyknackhq/__init__.html#module-pyknackhq>`_
 
 .. _install:

@@ -10,4 +10,8 @@ subpackage and modules
 .. toctree::
    :maxdepth: 1
 
-	zzz_manual_install <zzz_manual_install>
+	client <client>
+	datatype <datatype>
+	js <js>
+	py23compatible <py23compatible>
+	schema <schema>

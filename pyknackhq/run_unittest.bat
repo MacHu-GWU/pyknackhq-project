@@ -1,3 +1,3 @@
 pushd "%~dp0"
-python __init__.py
+python datatype.py
 pause

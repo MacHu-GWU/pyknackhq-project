@@ -3,188 +3,116 @@
 Advance Feature
 ===================================================================================================
 
-1. Field key and name handling
+``pyknackhq`` provides several features to allow developer write productive code.
+
+- `Field key and name handling <key_>`_
+- `Raw and Html data format handling <raw_>`_
+- `Browse schema <schema_>`_
+- `Query with filter, sort, pagination <query_>`_
+- `Data type constructor <dtype_>`_
+
+
+.. _key:
+
+Field key and name handling
 ---------------------------------------------------------------------------------------------------
 
-http://helpdesk.knackhq.com/support/solutions/articles/5000444173-working-with-the-api#response
+By default, knackhq API returns json data using field key (`What is field key? <http://helpdesk.knackhq.com/support/solutions/articles/5000444173-working-with-the-api#field_keys>`_), for example:
 
-By default, field record response format contains both html and raw data version, and its in field key version, which is not explicit:
+.. code-block:: json
+
+	{
+	    "field_1": 100,
+	    "field_1_raw": 100,
+	    "field_2": "abc",
+	    "field_2_raw": "abc",
+	}
+
+That means, you have to lookup all field keys when you want insert data.
+
+But the good news is, ``pyknackhq`` provides a optional parameter ``using_name`` for most of CRUD methods. By default, it is equal to ``True``, which means you can use the human readable field name as the key of the json data:
 
 .. code-block:: python
 
+	collection.insert({"employee id": "E001", "name": "Michael Jackson"})
+
+	collection.find(filter={
+	    "field": "date of birth",
+	    "operator": "is after",
+	    "value": "01/01/1970",
+	})
+
+	collection.update(id_="0000aaaa1111bbbb2222cccc", data={"name": "Barrack Obama"})
+
+If you really want to use the naive field key, you can still do this::
+
+ 	collection.insert({"field_1": "E001", "name": Michael Jackson"}, using_name=False)
+
+
+.. _raw:
+
+Raw and Html data format handling
+---------------------------------------------------------------------------------------------------
+
+The original knackhq API provides 3 options(Raw, HTML, Both) for the response format (`What is response format? <http://helpdesk.knackhq.com/support/solutions/articles/5000444173-working-with-the-api#response>`_). A default http get response looks like:
+
+.. code-block:: json
+	
 	{
-	    "field_19": 1,
-	    "field_19_raw": 1,
-	    "field_20": "Obama",
-	    "field_20_raw": "Obama",
-	    "field_21": "Barrack",
-	    "field_21_raw": "Barrack",
-	    "field_22": "01/31/1975",
-	    "field_22_raw": {
-	        "am_pm": "AM",
-	        "date": "01/31/1975",
-	        "date_formatted": "01/31/1975",
-	        "hours": "12",
-	        "minutes": "00",
-	        "timestamp": "01/31/75Y 12:00 am",
-	        "unix_timestamp": 160358400000
-	    },
-	    "field_23": "<a href="mailto:obama@gmail.com">obama@gmail.com</a>",
-	    "field_23_raw": {"email": "obama@gmail.com"},
-	    "field_24": "<a href="tel:1234567890">(123) 456-7890</a>",
-	    "field_24_raw": {
-	        "area": "123",
-	        "formatted": "(123) 456-7890",
-	        "full": "1234567890",
-	        "number": "4567890"
-	    },
-	    "id": "5637e558d8c931a86c325143"
+	    "field_1": "<a href="mailto:obama@gmail.com">obama@gmail.com</a>",
+	    "field_1_raw": {"email": "obama@gmail.com"},
 	}
 
-In pyknackhq, the field record response using human readable key that matching the schema you defined in the backend by default. For the same purpose, the insert operation is designed to be compatible with human readable field name. The Python API client automatically read the schema and handle the field name to key mapping for you.
+You can set the parameter ``raw`` to True/False to tell the API which format you want (By default ``raw=True``):
 
 .. code-block:: python
 
-	import pyknackhq
-	import pprint
-	
-	app = pyknackhq.Application(
-	    application_name="what ever you want.",
-	    auth=pyknackhq.Auth.from_json("auth.json"),
-	)
-	employee = app.get_object("employee")
-	for record in employee.find():
-	    pprint.pprint(record)
+	record = collection.find_one(id_="0000aaaa1111bbbb2222cccc")
+	print(record)
 
-	# screen display:
-
-	{
-	    "id": "5637e558d8c931a86c325143",
-	    "employee_id": 1,
-	    "first name": "Obama",
-	    "last name": "Barrack",
-	    "date of birth": {
-	        "am_pm": "AM",
-	        "date": "01/31/1975",
-	        "date_formatted": "01/31/1975",
-	        "hours": "12",
-	        "minutes": "00",
-	        "timestamp": "01/31/75Y 12:00 am",
-	        "unix_timestamp": 160358400000
-	    },
-	    "mobile phone": {
-	        "area": "123",
-	        "formatted": "(123) 456-7890",
-	        "full": "1234567890",
-	        "number": "4567890"
-	    },
-	    "work email": {"email": "obama@gmail.com"}
-	}
+	Out: {"email": {"email": "obama@gmail.com"}}
 
 
-2. Browse schema
+	record = collection.find_one(id_="0000aaaa1111bbbb2222cccc", raw=False)
+	print(record)
+
+	Out: {"email": "<a href="mailto:obama@gmail.com">obama@gmail.com</a>"}
+
+
+.. _schema:
+
+Browse schema
 ---------------------------------------------------------------------------------------------------
 
-This is how knackhq organize your data. You can have multiple objects for each application. Each object has its object_key, object_name and many fields. Each field has its field_key, field_name, field_data_type and whether it is required. And :class:`pyknackhq.Schema` is a container having those information. I provide a way to print it in human readable format::
+If you want to know every single detail about your knackhq applicatoin such as:
 
-	pprint.pprint(app.schema.structure)
+1. How many object you have?
+2. How many field you have for each object?
+3. How everything been organized?
+4. Setting for each field, like default value, format?
+5. Application metadata?
+6. etc...
 
-	# screen display:
+``pyknackhq`` provide a convenient method to export this into a nicely formatted json file:
 
-	{
-	    "name": "apitest",
-	    "objects": {
-	        "object_4": {
-	            "name": "employee",
-	            "key": "object_4",
-	            "fields": {
-	                "field_19": {
-	                    "dtype": "auto_increment",
-	                    "key": "field_19",
-	                    "name": "employee_id",
-	                    "required": False
-	                },
-	                "field_20": {
-	                    "dtype": "short_text",
-	                    "key": "field_20",
-	                    "name": "first name",
-	                    "required": False
-	                },
-	                "field_21": {
-	                    "dtype": "short_text",
-	                    "key": "field_21",
-	                    "name": "last name",
-	                    "required": False
-	                },
-	                "field_22": {
-	                    "dtype": "date_time",
-	                    "key": "field_22",
-	                    "name": "date of birth",
-	                    "required": False
-	                },
-	                "field_23": {
-	                    "dtype": "email",
-	                    "key": "field_23",
-	                    "name": "work email",
-	                    "required": False
-	                },
-	                "field_24": {
-	                    "dtype": "phone",
-	                    "key": "field_24",
-	                    "name": "mobile phone",
-	                    "required": False
-	                }
-	            }	        
-	        }
-	    }
-	}
+.. code-block:: python
 
-In addition, you can easily access object_key, object_name, :class:`pyknackhq.Object` instance, field_key, field_name, :class:`pyknackhq.Field` instance by simply calling the following methods or attributes::
+	client = KnackhqClient(auth=KnackhqAuth.from_json("auth.json"))
+	client.export_schema("schema.json") 
 
-	>>> app.all_object_key
-	["object_4"]
-	
-	>>> app.all_object_name
-	["employee"]
-	
-	>>> employee = app.get_object("employee")
-	>>> employee.all_field_key
-	['field_20', 'field_24', 'field_21', 'field_19', 'field_23', 'field_22']
-
-	>>> employee.all_field_name
-	['first name', 'mobile phone', 'last name', 'employee_id', 'work email', 'date of birth']
-
-	>>> date_of_birth = employee.get_field("date of birth")
-	>>> date_of_birth
-	Field(key='field_22', name='date of birth', dtype='date_time', required=False)
+You can download an example schema file here: www.wbh-doc.com.s3.amazonaws.com/pyknackhq/example_schema.json
 
 
-Read and write your schema info
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. _query:
 
-Everytime when you create an :class:`pyknackhq.Application` instance, if the schema are not defined, then several API call are made silently, which is a little expensive. Pyknackhq allow developer to dump schema info to a json file in one line::
-	
-	app = pyknackhq.Application(
-	    application_name="what ever you want.",
-	    auth=pyknackhq.Auth.from_json("auth.json"),
-	)
-	app.schema.to_json("application_schema.json") # "application_schema.json" is the default file name
-
-And next time, if no change are made in your schema, then you can read it from json file rather than making expensive API call::
-
-	app = pyknackhq.Application(
-	    application_name="what ever you want.",
-	    auth=pyknackhq.Auth.from_json("auth.json"),
-	    schema=pyknackhq.Schema.from_json("application_schema.json"),
-	) # no API call is made
-
-
-3. Easy query
+Query with filter, sort, pagination
 ---------------------------------------------------------------------------------------------------
 
-If you are familiar with `MongoDB <https://www.mongodb.com/>`_, you may notice that the syntax of pyknackhq API is very similar to `pymongo <https://api.mongodb.org/python/current/>`_. Using filter, sort, pagination is super simple with pyknackhq. For arguments reference, read :meth:`pyknackhq.Object.find`.
+If you are familiar with `MongoDB <https://www.mongodb.com/>`_, you may notice that the syntax of pyknackhq API is very similar to `pymongo <https://api.mongodb.org/python/current/>`_. Using filter, sort, pagination is super simple with pyknackhq. For arguments reference, read :meth:`pyknackhq.client.Collection.find`.
 
-Let's see how it works with a real example::
+Let's see how it works with a real example:
+
+.. code-block:: python
 
 	res = employee.find(
 	    filter=[
@@ -199,4 +127,35 @@ Let's see how it works with a real example::
 	)
 	pprint.pprint(res)
 
-OK, you just finshed! For the source code and argument reference, please read :mod:`API Reference <pyknackhq>`.
+
+.. _dtype:
+
+Data type constructor
+---------------------------------------------------------------------------------------------------
+
+The data structure for some field type such as ``short text`` and ``number`` is pretty simple. But some not. The raw structure for each field type can be found `here <http://helpdesk.knackhq.com/support/solutions/articles/5000446405-api-reference-field-types>`_. 
+
+However, ``pyknackhq`` provide a Object Oriented way to construct data for some complex field, such as ``Date/Time``, ``Address``, ``Phone``, ``Link``, ``Email``, ``Currency``. And the most of python idle has auto-complete feature to help you focus on the data itself.
+
+For example:
+
+.. code-block:: python
+
+	from pyknackhq import dtype
+	from pyknackhq import * # Import all data type
+
+	# the naive way
+	record1 = {"address field": {
+	    "street": "123 St", "city": "My City", "state": "My State", "zipcode": "12345"}}
+	
+	# use data type constructor via dtype
+	record1 = {"address field": dtype.AddressType(
+	    street="123 St", city="My City", state="My State", zipcode="12345")}
+
+	# or using the data type constructor class
+	record2 = {"address field": AddressType(
+	    street="123 St", city="My City", state="My State", zipcode="12345")}
+
+	collection.insert()
+
+OK, you just finished! For the source code and programming reference, please read :mod:`API Reference <pyknackhq>`.
