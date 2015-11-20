@@ -1,0 +1,8 @@
+{
+    "all day field": "11/01/2015 to 11/30/2015",
+    "daily repeat field": "11/01/2015 00:00 to 11/30/2015 23:45",
+    "id": "564cf801d49b5f1249121342",
+    "monthly repeat field": "01/01/2015 to 12/31/2015",
+    "weekly repeat field": "11/01/2015 08:00 to 11/30/2015 08:00",
+    "yearly repeat field": "01/01/2000 to 12/31/2015"
+}

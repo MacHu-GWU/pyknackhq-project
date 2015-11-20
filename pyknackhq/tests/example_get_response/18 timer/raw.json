@@ -1,0 +1,28 @@
+{
+    "id": "564f5be525ff08ad223010b1",
+    "timer field": {
+        "times": [
+            {
+                "from": {
+                    "am_pm": "AM",
+                    "date": "11/01/2015",
+                    "date_formatted": "11/01/2015",
+                    "hours": "12",
+                    "minutes": "00",
+                    "timestamp": "11/01/15Y 12:00 am",
+                    "unix_timestamp": 1446336000000
+                },
+                "to": {
+                    "am_pm": "PM",
+                    "date": "11/01/2015",
+                    "date_formatted": "11/01/2015",
+                    "hours": "11",
+                    "minutes": "59",
+                    "timestamp": "11/01/15Y 11:59 pm",
+                    "unix_timestamp": 1446422340000
+                }
+            }
+        ],
+        "total_time": 86340000
+    }
+}

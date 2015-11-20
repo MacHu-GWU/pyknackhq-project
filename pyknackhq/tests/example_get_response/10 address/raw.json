@@ -1,0 +1,59 @@
+{
+    "id": "5640269f58d6b4c5617d1645",
+    "international address": {
+        "city": "x city",
+        "latitude": 26.5656071,
+        "longitude": 31.6964439,
+        "state": "y province",
+        "street": "123 st",
+        "street2": "apt 456",
+        "zip": "98765"
+    },
+    "international coordinate": {
+        "city": "x city",
+        "latitude": 26.5656071,
+        "longitude": 31.6964439,
+        "state": "y province",
+        "street": "123 st",
+        "street2": "apt 456",
+        "zip": "98765"
+    },
+    "international with country address": {
+        "city": "x city",
+        "country": "z country",
+        "latitude": 10.7192197,
+        "longitude": -71.619857,
+        "state": "y province",
+        "street": "123 st",
+        "street2": "apt 456",
+        "zip": "98765"
+    },
+    "international with country coordinate": {
+        "city": "x city",
+        "country": "z country",
+        "latitude": 10.7192197,
+        "longitude": -71.619857,
+        "state": "y province",
+        "street": "123 st",
+        "street2": "apt 456",
+        "zip": "98765"
+    },
+    "us address": {
+        "city": "Washington",
+        "latitude": 38.89767579999999,
+        "longitude": -77.0364823,
+        "state": "DC ",
+        "street": "1600 Pennsylvania Ave NW",
+        "street2": "",
+        "zip": "20500"
+    },
+    "us coordinate": {
+        "city": "Washington",
+        "latitude": "38.8976989",
+        "longitude": "-77.036553192281",
+        "state": "DC",
+        "street": "1600 Pennsylvania Ave NW",
+        "street2": "",
+        "zip": "20500"
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "address field": "1600 Pennsylvania Ave NW<br />Washington, DC 20500",
+    "auto increment field": 1,
+    "currency field": "$123.45",
+    "date time field": "11/01/2015",
+    "email field": "<a href=\"mailto:example@gmail.com\">example@gmail.com</a>",
+    "file field": "<a href=\"https://s3.amazonaws.com/assets.knackhq.com/assets/56325e4a5839b2486913f542/56401ffbdb53de555f7e40c0/original/readme.txt\" target=\"_blank\">readme.txt</a>",
+    "id": "564020bd465539a51dede83f",
+    "image field": "<img src=\"https://s3.amazonaws.com/assets.knackhq.com/assets/56325e4a5839b2486913f542/56401fafefbc736c4aff457c/original/sanheprojectlogo.jpg\" />",
+    "link field": "<a href=\"http://www.google.com\">http://www.google.com</a>",
+    "multiple choice field": "First Choice, Second Choice",
+    "name field": "Obama Barrack",
+    "number field": "3",
+    "paragraph text field": "a paragraph text",
+    "phone field": "<a href=\"tel:1234567890\">(123) 456-7890</a>",
+    "rating field": "3.00",
+    "rich text field": "<strong>a rich text</strong>",
+    "short text field": "a short text",
+    "signature field": "<img src=\"data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMjc2IiBoZWlnaHQ9Ijk2Ij48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBkPSJNIDYyIDMgYyAtMC4xNCAtMC4wNCAtNS4zNiAtMS43MSAtOCAtMiBjIC0zLjIxIC0wLjM2IC03LjI3IC0xLjAzIC0xMCAwIGMgLTUuOTggMi4yNyAtMTMuMTcgNy4wNCAtMTkgMTEgYyAtMi4yNSAxLjUzIC00LjIyIDMuODYgLTYgNiBjIC0xLjUxIDEuODIgLTMuMzUgNC4wNSAtNCA2IGMgLTAuNTQgMS42MiAtMC43MyA0LjQ2IDAgNiBjIDIuMjEgNC42MyA2LjU0IDEwLjU2IDEwIDE1IGMgMC45NiAxLjIzIDIuODUgMS44NSA0IDMgYyAxLjc5IDEuNzkgNC42OSA0Ljc2IDUgNiBjIDAuMTQgMC41NyAtMS45OSAxLjk3IC0zIDIgYyAtOC40MiAwLjI2IC0zMCAtMSAtMzAgLTEiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBkPSJNIDkxIDM2IGMgLTAuMTcgMC40IC05LjggMjIuNTggLTEwIDIzIGMgLTAuMDMgMC4wNyAxIC00IDEgLTQiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBkPSJNIDk5IDEwIGwgMSAxIi8+PHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZD0iTSAxNzcgMTkgYyAtMC4wNSAtMC4wNCAtMi4wMiAtMS45MiAtMyAtMiBjIC0yLjc0IC0wLjIxIC03LjA5IDAuMDMgLTEwIDEgYyAtMy42MyAxLjIxIC03LjkxIDMuNjggLTExIDYgYyAtMS45MiAxLjQ0IC0zLjk1IDMuOTEgLTUgNiBjIC0xLjExIDIuMjEgLTEuNiA1LjM3IC0yIDggYyAtMC4yNSAxLjU5IC0wLjczIDQuNzggMCA1IGMgMS40OSAwLjQ1IDcuMTIgLTAuNzkgMTAgLTIgYyAzLjA2IC0xLjI5IDYuNTcgLTMuNzUgOSAtNiBjIDEuNjIgLTEuNSAyLjU1IC00LjM0IDQgLTYgYyAwLjczIC0wLjgzIDIuMzggLTIuMTIgMyAtMiBjIDAuNjIgMC4xMiAxLjk0IDEuOTggMiAzIGMgMC41MiA5LjM3IDAuOTEgMjIuNTkgMCAzMyBjIC0wLjM3IDQuMjkgLTIuMzggOC42OCAtNCAxMyBjIC0yLjQ1IDYuNTQgLTUuOCAxNS43IC04IDE5IGMgLTAuNDQgMC42NiAtMy4wOCAtMC4zOSAtNCAtMSBjIC0wLjggLTAuNTQgLTEuMTcgLTIuMjcgLTIgLTMgYyAtMS42NiAtMS40NSAtNC4zNCAtMi41NSAtNiAtNCBjIC0wLjgzIC0wLjczIC0xLjkyIC0yLjAyIC0yIC0zIGMgLTAuMjEgLTIuNzQgMC4yIC03LjYgMSAtMTAgYyAwLjI5IC0wLjg2IDIuMzMgLTEuMTkgMyAtMiBjIDAuODQgLTEgMS4wMiAtMy4wOSAyIC00IGMgMy41OSAtMy4zNSA4LjgxIC03LjI5IDEzIC0xMCBjIDEuMDUgLTAuNjggMi44IC0wLjQ1IDQgLTEgYyAyLjM0IC0xLjA3IDQuNTMgLTMuMSA3IC00IGMgOC4zMiAtMy4wMyAxNy4zOSAtNi4yIDI2IC04IGwgMTcgLTEiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBkPSJNIDI0MCAxNiBjIDAgMC4xOSAwLjQ5IDcuNDUgMCAxMSBjIC0wLjgyIDUuOTUgLTIuMzYgMTIuMTUgLTQgMTggYyAtMC42OCAyLjQxIC0yLjkgNy4xIC0zIDcgYyAtMC4xIC0wLjEgMS4wOSAtNS4zOSAyIC04IGMgMS43OCAtNS4xMSAzLjU1IC0xMC40NyA2IC0xNSBjIDEuNzMgLTMuMiA0LjY3IC02Ljg4IDcgLTkgYyAwLjg0IC0wLjc3IDIuOTUgLTEuMTUgNCAtMSBjIDAuOTIgMC4xMyAyLjU3IDEuMTQgMyAyIGMgMC45OSAxLjk4IDEuNzEgNS4zNiAyIDggYyAwLjM2IDMuMjEgMC4yMyA2Ljc4IDAgMTAgYyAtMC4wOSAxLjMzIC0xLjIgMi44NyAtMSA0IGMgMC4zOCAyLjA4IDEuODkgNi4wNCAzIDcgYyAwLjYgMC41MiAyLjg4IC0wLjM3IDQgLTEgYyAzLjkyIC0yLjIgMTIgLTggMTIgLTgiLz48L3N2Zz4=\" />",
+    "timer field": "12:00am to 12:30am = 30 minutes",
+    "yes no field": "Yes"
+}

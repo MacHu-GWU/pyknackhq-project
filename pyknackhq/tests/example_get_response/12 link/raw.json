@@ -1,0 +1,13 @@
+{
+    "id": "564f5b56eb15843c4c7a4aed",
+    "use the same text for all links field": {
+        "url": "http://www.google.com"
+    },
+    "use the url field": {
+        "url": "http://www.google.com"
+    },
+    "use unique text for each link field": {
+        "label": "Google Homepage",
+        "url": "http://www.google.com"
+    }
+}

@@ -1,0 +1,6 @@
+{
+    "id": "564f5b8525ff08ad223010a7",
+    "use the email address field": "<a href=\"mailto:test@example.com\">test@example.com</a>",
+    "use the same text for all emails field": "<a href=\"mailto:test@example.com\">Send Email</a>",
+    "use unique text for each email field": "<a href=\"mailto:test@example.com\">My Personal Email</a>"
+}

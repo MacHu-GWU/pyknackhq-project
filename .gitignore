@@ -4,13 +4,10 @@
 
 # File
 *.pyc
-auth.json
-application_schema.json
 
 # Directory
 build
 dist
-tests
 pyknackhq.egg-info
 
 # =========================

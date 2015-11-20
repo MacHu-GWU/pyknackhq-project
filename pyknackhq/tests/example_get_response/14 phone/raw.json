@@ -1,0 +1,44 @@
+{
+    "format1 field": {
+        "area": "123",
+        "formatted": "(123) 456-7890",
+        "full": "1234567890",
+        "number": "4567890"
+    },
+    "format2 field": {
+        "area": "123",
+        "formatted": "123.456.7890",
+        "full": "1234567890",
+        "number": "4567890"
+    },
+    "format3 field": {
+        "area": "999",
+        "country": "99",
+        "formatted": "+99 999 999 999",
+        "full": "99999999999",
+        "number": "999999"
+    },
+    "format4 field": {
+        "area": "909",
+        "country": "99",
+        "formatted": "+99 (0)999 999 9999",
+        "full": "9909999999999",
+        "number": "999999999"
+    },
+    "format5 field": {
+        "formatted": "99 9999 9999",
+        "full": "9999999999",
+        "number": "9999999999"
+    },
+    "format6 field": {
+        "formatted": "9999 999 999",
+        "full": "9999999999",
+        "number": "9999999999"
+    },
+    "format7 field": {
+        "formatted": "1234567890",
+        "full": "1234567890",
+        "number": "1234567890"
+    },
+    "id": "56417115e32750d668b77386"
+}

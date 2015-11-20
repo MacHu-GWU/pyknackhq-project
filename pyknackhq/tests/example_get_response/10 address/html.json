@@ -1,0 +1,9 @@
+{
+    "id": "5640269f58d6b4c5617d1645",
+    "international address": "123 st<br />apt 456<br />x city, y province 98765",
+    "international coordinate": "123 st<br />apt 456<br />x city, y province 98765",
+    "international with country address": "123 st<br />apt 456<br />x city, y province 98765<br />z country",
+    "international with country coordinate": "123 st<br />apt 456<br />x city, y province 98765<br />z country",
+    "us address": "1600 Pennsylvania Ave NW<br />Washington, DC  20500",
+    "us coordinate": "1600 Pennsylvania Ave NW<br />Washington, DC 20500"
+}

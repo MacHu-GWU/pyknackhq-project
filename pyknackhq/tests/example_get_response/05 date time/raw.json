@@ -1,0 +1,30 @@
+{
+    "date field": {
+        "am_pm": "AM",
+        "date": "11/01/2015",
+        "date_formatted": "11/01/2015",
+        "hours": "12",
+        "minutes": "00",
+        "timestamp": "11/01/15Y 12:00 am",
+        "unix_timestamp": 1446336000000
+    },
+    "datetime 12hour field": {
+        "am_pm": "PM",
+        "date": "11/01/2015",
+        "date_formatted": "11/01/2015",
+        "hours": "05",
+        "minutes": "00",
+        "timestamp": "11/01/15Y 05:00 pm",
+        "unix_timestamp": 1446397200000
+    },
+    "datetime 24hour field": {
+        "am_pm": "AM",
+        "date": "11/01/2015",
+        "date_formatted": "11/01/2015",
+        "hours": "06",
+        "minutes": "00",
+        "timestamp": "11/01/15Y 06:00 am",
+        "unix_timestamp": 1446357600000
+    },
+    "id": "564f5a1efd62378818e4277f"
+}

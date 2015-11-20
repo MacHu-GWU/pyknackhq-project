@@ -1,0 +1,6 @@
+{
+    "id": "564f5b56eb15843c4c7a4aed",
+    "use the same text for all links field": "<a href=\"http://www.google.com\" target=\"_blank\">Click Me</a>",
+    "use the url field": "<a href=\"http://www.google.com\">http://www.google.com</a>",
+    "use unique text for each link field": "<a href=\"http://www.google.com\">Google Homepage</a>"
+}

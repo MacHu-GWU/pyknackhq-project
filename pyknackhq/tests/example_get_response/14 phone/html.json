@@ -1,0 +1,10 @@
+{
+    "format1 field": "<a href=\"tel:1234567890\">(123) 456-7890</a>",
+    "format2 field": "<a href=\"tel:1234567890\">123.456.7890</a>",
+    "format3 field": "<a href=\"tel:99999999999\">99999999999</a>",
+    "format4 field": "<a href=\"tel:9909999999999\">+99 (0)999 999 9999</a>",
+    "format5 field": "<a href=\"tel:9999999999\">99 9999 9999</a>",
+    "format6 field": "<a href=\"tel:9999999999\">9999 999 999</a>",
+    "format7 field": "<a href=\"tel:1234567890\">1234567890</a>",
+    "id": "56417115e32750d668b77386"
+}

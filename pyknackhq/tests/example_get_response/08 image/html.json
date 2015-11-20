@@ -1,0 +1,7 @@
+{
+    "id": "5640f492a77af3685bfd0609",
+    "image field": "<img src=\"https://s3.amazonaws.com/assets.knackhq.com/assets/56325e4a5839b2486913f542/5640f3c7db53de555f7e48c1/original/image1.jpg\" />",
+    "image field with both": "<img src=\"http://www.wbh-doc.com.s3.amazonaws.com/sqlite4dummy/_images/sqlite4dummy-logo.jpg\" />",
+    "image field with external link": "<img src=\"https://www.python.org/static/img/python-logo.png\" />",
+    "image field with thumbnail": "<img src=\"https://s3.amazonaws.com/assets.knackhq.com/assets/56325e4a5839b2486913f542/5640f3f7a5b2f84f5bc6e508/original/sanheprojectlogo.jpg\" />"
+}

@@ -1,0 +1,25 @@
+{
+    "id": "5640f492a77af3685bfd0609",
+    "image field": {
+        "application_id": "56325e4a5839b2486913f542",
+        "filename": "image1.jpg",
+        "id": "5640f3c7db53de555f7e48c1",
+        "s3": true,
+        "size": 1684,
+        "thumb_url": "http://assets.knackhq.com/assets/56325e4a5839b2486913f542/5640f3c7db53de555f7e48c1/thumb/image1.jpg",
+        "type": "image",
+        "url": "http://assets.knackhq.com/assets/56325e4a5839b2486913f542/5640f3c7db53de555f7e48c1/original/image1.jpg"
+    },
+    "image field with both": "http://www.wbh-doc.com.s3.amazonaws.com/sqlite4dummy/_images/sqlite4dummy-logo.jpg",
+    "image field with external link": "https://www.python.org/static/img/python-logo.png",
+    "image field with thumbnail": {
+        "application_id": "56325e4a5839b2486913f542",
+        "filename": "sanheprojectlogo.jpg",
+        "id": "5640f3f7a5b2f84f5bc6e508",
+        "s3": true,
+        "size": 2586,
+        "thumb_url": "http://assets.knackhq.com/assets/56325e4a5839b2486913f542/5640f3f7a5b2f84f5bc6e508/thumb/sanheprojectlogo.jpg",
+        "type": "image",
+        "url": "http://assets.knackhq.com/assets/56325e4a5839b2486913f542/5640f3f7a5b2f84f5bc6e508/original/sanheprojectlogo.jpg"
+    }
+}
