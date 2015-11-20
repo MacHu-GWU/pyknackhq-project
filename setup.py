@@ -55,7 +55,7 @@ from datetime import datetime
 import os
 
 GITHUB_ACCOUNT = "MacHu-GWU" # your GitHub account name
-RELEASE_TAG = "2015-11-03" # the GitHub release tag
+RELEASE_TAG = "2015-11-20" # the GitHub release tag
 NAME = "pyknackhq" # name your package
 
 VERSION = __import__(NAME).__version__

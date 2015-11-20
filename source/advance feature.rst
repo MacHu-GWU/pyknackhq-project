@@ -156,6 +156,6 @@ For example:
 	record2 = {"address field": AddressType(
 	    street="123 St", city="My City", state="My State", zipcode="12345")}
 
-	collection.insert()
+	collection.insert([record1, record2])
 
 OK, you just finished! For the source code and programming reference, please read :mod:`API Reference <pyknackhq>`.
